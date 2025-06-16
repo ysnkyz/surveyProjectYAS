@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using surveyProjectYAS.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var dbPath = "survey.db";
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<SurveyContext>(options =>
+    options.UseSqlite("Data Source = survey.db"));
 
 var app = builder.Build();
 

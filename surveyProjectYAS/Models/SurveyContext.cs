@@ -2,7 +2,15 @@
 namespace surveyProjectYAS.Models;
     public class SurveyContext : DbContext
     {
-    public SurveyContext(DbContextOptions<SurveyContext> options) : base(options) { }
+
+    public string DbPath { get; }
+
+    public SurveyContext(DbContextOptions<SurveyContext> options) : base(options) 
+    {
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        DbPath = System.IO.Path.Join(path, "survey.db");
+    }
 
     public DbSet<Question> Questions { get; set; }
     public DbSet<Option> Options { get; set; }
