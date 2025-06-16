@@ -8,7 +8,7 @@
         { "Yeşil", "bg-success" },
         { "Sarı", "bg-warning text-dark" },
         { "Siyah", "bg-dark" },
-        { "default", "bg-secondary" } // ❗ eksikti, eklendi
+        { "default", "bg-secondary" } 
     };
 }
 
@@ -17,7 +17,7 @@
 @foreach (var option in Model.Options)
 {
     var percent = totalVotes > 0 ? (int)((double)option.VoteCount / totalVotes * 100) : 0;
-    var trimmedText = option.Text.Trim(); // Boşluk önlemi
+    var trimmedText = option.Text.Trim(); 
     var colorClass = colorMap.ContainsKey(trimmedText) ? colorMap[trimmedText] : colorMap["default"];
 
     <p><strong>@option.Text</strong> (@percent%)</p>
