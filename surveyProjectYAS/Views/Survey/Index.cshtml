@@ -1,1 +1,20 @@
-﻿
+﻿@model Question
+
+@if (Context.Request.Cookies["HasVoted"] != null)
+{
+    <script>window.location.href = "/Survey/Results";</script>
+}
+else
+{
+    <h2>@Model.Text</h2>
+    <form asp-action="Vote" method="post">
+        @foreach (var option in Model.Options)
+        {
+            <div>
+                <input type="radio" name="optionId" value="@option.Id" required />
+                @option.Text
+            </div>
+        }
+        <button type="submit" class="btn btn-primary">Oy Ver</button>
+    </form>
+}

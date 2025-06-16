@@ -1,0 +1,29 @@
+﻿@model Question
+@{
+    int totalVotes = Model.Options.Sum(o => o.VoteCount);
+    var colorMap = new Dictionary<string, string>
+    {
+        { "Kırmızı", "bg-danger" },
+        { "Mavi", "bg-primary" },
+        { "Yeşil", "bg-success" },
+        { "Sarı", "bg-warning text-dark" },
+        { "Siyah", "bg-dark" },
+        { "default", "bg-secondary" } // ❗ eksikti, eklendi
+    };
+}
+
+<h2>@Model.Text</h2>
+
+@foreach (var option in Model.Options)
+{
+    var percent = totalVotes > 0 ? (int)((double)option.VoteCount / totalVotes * 100) : 0;
+    var trimmedText = option.Text.Trim(); // Boşluk önlemi
+    var colorClass = colorMap.ContainsKey(trimmedText) ? colorMap[trimmedText] : colorMap["default"];
+
+    <p><strong>@option.Text</strong> (@percent%)</p>
+    <div class="progress mb-3">
+        <div class="progress-bar @colorClass" style="width:@percent%">
+            @percent%
+        </div>
+    </div>
+}
