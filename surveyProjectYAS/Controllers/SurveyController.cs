@@ -34,11 +34,13 @@ namespace surveyProjectYAS.Controllers
             return RedirectToAction("Results");
         }
 
+
         public IActionResult Results()
         {
             var question = _context.Questions.Include(q => q.Options).FirstOrDefault();
             return View(question);
         }
+
     }
 }
 

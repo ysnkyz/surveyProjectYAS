@@ -8,22 +8,34 @@
         { "Yeşil", "bg-success" },
         { "Sarı", "bg-warning text-dark" },
         { "Siyah", "bg-dark" },
-        { "default", "bg-secondary" } 
+        { "default", "bg-secondary" }
     };
 }
 
-<h2>@Model.Text</h2>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(135deg, #f6f9fc, #e9eff1);">
+    <div class="card p-5 shadow-lg border-0 rounded-4" style="width: 100%; max-width: 700px;">
+        <h2 class="text-center mb-4 fw-bold">@Model.Text</h2>
 
-@foreach (var option in Model.Options)
-{
-    var percent = totalVotes > 0 ? (int)((double)option.VoteCount / totalVotes * 100) : 0;
-    var trimmedText = option.Text.Trim(); 
-    var colorClass = colorMap.ContainsKey(trimmedText) ? colorMap[trimmedText] : colorMap["default"];
+        @foreach (var option in Model.Options)
+        {
+            var percent = totalVotes > 0 ? (int)((double)option.VoteCount / totalVotes * 100) : 0;
+            var trimmedText = option.Text.Trim();
+            var colorClass = colorMap.ContainsKey(trimmedText) ? colorMap[trimmedText] : colorMap["default"];
 
-    <p><strong>@option.Text</strong> (@percent%)</p>
-    <div class="progress mb-3">
-        <div class="progress-bar @colorClass" style="width:@percent%">
-            @percent%
-        </div>
+            <div class="mb-3">
+                <p class="mb-1"><strong>@option.Text</strong> <span class="text-muted">(@percent%)</span></p>
+                <div class="progress rounded-pill shadow-sm">
+                    <div class="progress-bar @colorClass" style="width:@percent%; transition: width 1s;">
+                        @percent%
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-}
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+    }
+</style>
