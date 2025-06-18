@@ -20,20 +20,42 @@ namespace surveyProjectYAS.Controllers
         }
 
         [HttpPost]
-        public IActionResult Vote(int optionId)
+        public async Task<IActionResult> Vote(int optionId)
         {
-            var option = _context.Options.Find(optionId);
-            if (option != null)
+            var option = await _context.Options.FindAsync(optionId);
+            if (option == null)
             {
-                option.VoteCount++;
-                _context.SaveChanges();
-
-                Response.Cookies.Append("HasVoted", "true", new CookieOptions { Expires = DateTimeOffset.Now.AddDays(1) });
+                TempData["Message"] = "❌ Oy verme işlemi başarısız oldu.";
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Results");
+            option.VoteCount++;
+            await _context.SaveChangesAsync();
+
+            // Oy kullanıldı bilgisi cookieye yazılır
+            Response.Cookies.Append("HasVoted", "true", new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(1)
+            });
+
+            TempData["Message"] = "✅ Oy verme işlemi başarılı!";
+            return RedirectToAction("Index");
         }
 
+        //[HttpPost]
+        //public IActionResult Vote(int optionId)
+        //{
+        //    var option = _context.Options.Find(optionId);
+        //    if (option != null)
+        //    {
+        //        option.VoteCount++;
+        //        _context.SaveChanges();
+
+        //        Response.Cookies.Append("HasVoted", "true", new CookieOptions { Expires = DateTimeOffset.Now.AddDays(1) });
+        //    }
+
+        //    return RedirectToAction("Results");
+        //}
 
         public IActionResult Results()
         {

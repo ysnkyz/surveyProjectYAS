@@ -4,29 +4,39 @@
 {
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card p-4 shadow-sm">
+            <div class="col-lg-8">   @*başta yan yana olan sayfa düzenini alt alta güncellemek için kullanıldı *@
+                <div class="card p-4 shadow-sm mb-4">
                     <h2 class="text-center mb-4">@Model.Text</h2>
-                    <form asp-action="Vote" method="post">
+                    <form asp-action="Vote" method="post" onsubmit="validateVoteForm(event)">
                         @foreach (var option in Model.Options)
                         {
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="optionId" value="@option.Id" required />
+                                <input class="form-check-input" type="radio" name="optionId" value="@option.Id" />
                                 <label class="form-check-label">@option.Text</label>
                             </div>
                         }
                         <div class="text-center mt-4">
                             <button type="submit" class="btn btn-primary btn-lg px-4">Oy Ver</button>
                         </div>
+
+                        <div class="text-center mt-3">  @*oy verdikten sonra tempData ile mesaj bildirimi yapıldı *@
+                            <div id="validation-message" class="alert alert-danger text-center" style="display:none;"></div>
+                        </div>
                     </form>
+
                     <div class="text-center mt-3">
-                        <a href="/Survey/Results" class="btn btn-outline-secondary">Oy Sonuçlarını Görüntüle</a>
+                        @if (TempData["Message"] != null)
+                        {
+                            <div class="alert alert-info">
+                                @TempData["Message"]
+                            </div>
+                        }
+
+                        <button class="btn btn-outline-secondary" onclick="showResults()">Oy Sonuçlarını Görüntüle</button>
                     </div>
                 </div>
-            </div>
-                      
-            <div class="col-md-7">
-                <div class="card p-4 shadow-sm">
+
+                <div class="card p-4 shadow-sm" id="results-container" style="display: none;">
                     <h4 class="text-center">Oy Sonuçları</h4>
                     @await Html.PartialAsync("Results", Model)
                 </div>
@@ -38,7 +48,7 @@ else
 {
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-lg-8">
                 <div class="card p-5 shadow-lg">
                     <h2 class="text-center mb-4">@Model.Text</h2>
                     <form asp-action="Vote" method="post">
@@ -65,3 +75,33 @@ else
         background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     }
 </style>
+
+<script>
+    @*butona tıklayınca yumuşak geçiş ve görünür hale getirme burada*@
+    function showResults() {
+        const container = document.getElementById('results-container');
+        if (container) {
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+    @*oy verme başarısız oldu işlemi selected olmazsa gerçekleşir*@
+    function validateVoteForm(event) {
+        const options = document.querySelectorAll('input[name="optionId"]');
+        let selected = false;
+
+        for (const opt of options) {
+            if (opt.checked) {
+                selected = true;
+                break;
+            }
+        }
+
+        if (!selected) {
+            event.preventDefault();
+            const msg = document.getElementById('validation-message');
+            msg.innerText = "❌ Oy verme işlemi başarısız oldu.";
+            msg.style.display = 'block';
+        }
+    }
+</script>
